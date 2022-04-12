@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Entity
@@ -22,11 +21,11 @@ public class Product {
 
     @ManyToOne
     @JoinColumn(name = "SupplierID")
-    private Supplier supplierID;
+    private Supplier supplier;
 
     @ManyToOne
     @JoinColumn(name = "CategoryID")
-    private Category categoryID;
+    private Category category;
 
     @Column(name = "QuantityPerUnit", length = 20)
     private String quantityPerUnit;
