@@ -29,19 +29,23 @@ public class ProductoController {
     }
 
     @GetMapping("/product/{id}")
-    public ResponseEntity<Product> obtenerProductoPorId(@PathVariable("id") String idStr) {
+    public ResponseEntity<HashMap<String, Object>> obtenerProductoPorId(@PathVariable("id") String idStr) {
 
+        HashMap<String, Object> responseJson = new HashMap<>();
         try {
-            int id = Integer.parseInt(idStr);
-            Optional<Product> optProduct = productRepository.findById(id);
+            Optional<Product> optProduct = productRepository.findById(Integer.parseInt(idStr));
             if (optProduct.isPresent()) {
-                return ResponseEntity.ok(optProduct.get());
+                responseJson.put("result", "success");
+                responseJson.put("product", optProduct.get());
+                return ResponseEntity.ok(responseJson);
             } else {
-                return ResponseEntity.badRequest().body(null);
+                responseJson.put("msg", "Producto no encontrado");
             }
         } catch (NumberFormatException e) {
-            return ResponseEntity.badRequest().body(null);
+            responseJson.put("msg", "el ID debe ser un número entero positivo");
         }
+        responseJson.put("result", "failure");
+        return ResponseEntity.badRequest().body(responseJson);
     }
 
     @PostMapping(value = "/product")
@@ -134,7 +138,7 @@ public class ProductoController {
     }
 
     @PutMapping(value = "/product/parcial/xwwwform",
-            consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE} )
+            consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
     public ResponseEntity<HashMap<String, Object>> actualizarProductoParcialXwwwForm(Product product) {
 
         HashMap<String, Object> responseMap = new HashMap<>();
@@ -206,7 +210,6 @@ public class ProductoController {
             return ResponseEntity.badRequest().body(responseMap);
         }
     }
-
 
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
